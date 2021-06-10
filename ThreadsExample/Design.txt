@@ -1,0 +1,73 @@
+1:
+I am going to be using 4 threads for the servers (1 for each of the servers) and 1 thread for each of the customers as determined by the input file. The task of the customer thread is to simulate the time it tasks for arrival the time it takes waiting for a server to be ready and finally to simulate the service time (using usleep()). The task of the server threads is to determine which customers from the queue to choose to serve and to allow them to finish their simulation.
+
+2:
+The threads do not work independently. The customer threads need to be “controlled” by the server threads to allow them to simulate them going to a counter to be served. So in all the server threads act as controllers for the customer threads.
+
+3:
+I will be using 7 mutexs. 4 of those mutexs are for the clerks one to guard each one of the four clerks so that the clerks can simulate waiting for the customer to be served. 2 mutexs will be used to lock the each the economy queue and business queue this will allows us to change information on the business queue or the economy queue. The last mutex will be used guard the changes made to the time.
+
+4:
+The main thread will semi be idle, it will be waiting for all customer threads to be terminated before ending so that we can print out the averages waiting time etc. of the customers.
+
+5:
+I am representing the customer via threads, but I am representing the queues of the customer with a linked list.
+
+6:
+I will be using Mutex Locks to ensure that the linked list that I will be using will not be modified concurrently.
+
+7:
+
+I will be using 6 different convars.
+Convar 1: a) Clerk 1 is busy b) mutex for clerk 4 c) Finding what queue is ready to be used
+Convar 2: a) Clerk 2 is busy b) mutex for clerk 4 c) Finding what queue is ready to be used
+Convar 3: a) Clerk 3 is busy b) mutex for clerk 4 c) Finding what queue is ready to be used
+Convar 4: a) Clerk 4 is busy b) mutex for clerk 4 c) Finding what queue is ready to be used
+Convar 5: a) Waiting for a clerk to indicate the economy queue is ready for a customer to be served b) economy queue mutex c) Check to see if the customer is the head of the queue and to be served by the server.
+Convar 6: a) Waiting for a clerk to indicate the business queue is ready for a customer to be served b) business queue mutex c) Check to see if the customer is the head of the queue and to be served by the server.
+
+8:
+Initialize variables
+
+Create Clerk threads
+
+Create Customer threads
+
+Customer waits for arrival time before trying to enter a queue
+
+If Customer is part of the economy queue lock the economy mutex other lock the business mutex
+
+Add the customer to the queue of the mutex they locked and increase queue length
+
+Lock the Time mutex and add the start time of when the customer entered the queue
+
+Unlock the Time mutex
+
+Unlock the queue mutex for the correct queue the customer is in and wait for a clerk to signal that a customer in that queue could be served
+
+Clerk will loop through and check if a business queue has some customers and if that queue is idle otherwise it will check the economy queue
+
+Lock the mutex that for the selected queue and update that this clerk is working that queue
+
+Broadcast to all customers that are in the selected queue that this clerk is ready to work that queue.
+
+Unlock that selected queue
+
+Customer will lock the selected queue from that clerk and If customer is the head of the selected queue from the clerk selected that customer to service otherwise unlock the mutex
+
+Remove customer from the queue
+
+Unlock the queue mutex for the selected queue
+
+Simulate service time for that customer
+
+Lock the time mutex and print that time for to the console
+
+Wake the clerk that woke the customer so that they can choose another queue.
+
+Clerk tries to find another customer
+
+
+
+
+
